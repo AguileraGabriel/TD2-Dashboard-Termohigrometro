@@ -17,13 +17,14 @@ namespace WindowsFormsApp1
             this.Load += new EventHandler(Form1_Load);
 
         }
-        
+
         private void Form1_Load(object sender, EventArgs e)
         {
             try
             {
-                // Configurar el gráfico
-                ConfigurarGrafico();
+                // Configurar ambos gráficos
+                ConfigurarGraficoInyeccionRetorno();
+                ConfigurarGraficoTemperaturaHumedad();
 
                 // Configurar el puerto serie
                 serialPort.DataReceived += SerialPort_DataReceived;
@@ -35,9 +36,8 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void ConfigurarGrafico()
+        private void ConfigurarGraficoInyeccionRetorno()
         {
-            // Configurar el área del gráfico
             chartInyeccionRetorno.ChartAreas.Add(new ChartArea("Principal"));
 
             // Configurar la serie para inyección
@@ -59,6 +59,38 @@ namespace WindowsFormsApp1
             chartInyeccionRetorno.Series.Add(serieRetorno);
         }
 
+        private void ConfigurarGraficoTemperaturaHumedad()
+        {
+            chartTemperaturaHumedad.ChartAreas.Add(new ChartArea("Principal"));
+
+            // Configurar la serie para tempRef
+            var serieTempRef = new Series("TempRef")
+            {
+                ChartType = SeriesChartType.Line,
+                XValueType = ChartValueType.Time,
+                YValueType = ChartValueType.Double
+            };
+            chartTemperaturaHumedad.Series.Add(serieTempRef);
+
+            // Configurar la serie para humRef
+            var serieHumRef = new Series("HumRef")
+            {
+                ChartType = SeriesChartType.Line,
+                XValueType = ChartValueType.Time,
+                YValueType = ChartValueType.Double
+            };
+            chartTemperaturaHumedad.Series.Add(serieHumRef);
+
+            // Configurar la serie para dewPoint
+            var serieDewPoint = new Series("DewPoint")
+            {
+                ChartType = SeriesChartType.Line,
+                XValueType = ChartValueType.Time,
+                YValueType = ChartValueType.Double
+            };
+            chartTemperaturaHumedad.Series.Add(serieDewPoint);
+        }
+
         private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             try
@@ -76,49 +108,82 @@ namespace WindowsFormsApp1
         {
             try
             {
-                // Validar el JSON y formatearlo con indentación.
                 JObject jsonObject = JObject.Parse(json);
                 string jsonFormateado = jsonObject.ToString(Formatting.Indented);
 
-                // Mostrar el JSON formateado en el TextBox.
                 MostrarDatosEnPantalla(jsonFormateado);
 
-                // Extraer datos para el gráfico
+                // Extraer datos para el primer gráfico
                 double inyeccion = jsonObject["inyeccion"]?.Value<double>() ?? 0;
                 double retorno = jsonObject["retorno"]?.Value<double>() ?? 0;
                 string time = jsonObject["time"]?.Value<string>() ?? DateTime.Now.ToString("HH:mm:ss");
 
-                // Agregar puntos al gráfico
-                AgregarPuntosAlGrafico(time, inyeccion, retorno);
+                AgregarPuntosGraficoInyeccionRetorno(time, inyeccion, retorno);
+
+                // Extraer datos para el segundo gráfico
+                double tempRef = jsonObject["tempRef"]?.Value<double>() ?? 0;
+                double humRef = jsonObject["humRef"]?.Value<double>() ?? 0;
+                double dewPoint = jsonObject["dewPoint"]?.Value<double>() ?? 0;
+
+                AgregarPuntosGraficoTemperaturaHumedad(time, tempRef, humRef, dewPoint);
             }
             catch (JsonReaderException)
             {
-                // Si el JSON es inválido, mostrar un mensaje de error.
                 MostrarDatosEnPantalla("Error: El JSON recibido no es válido.");
             }
         }
 
-        private void AgregarPuntosAlGrafico(string time, double inyeccion, double retorno)
+        private void AgregarPuntosGraficoInyeccionRetorno(string time, double inyeccion, double retorno)
         {
             if (chartInyeccionRetorno.InvokeRequired)
             {
-                chartInyeccionRetorno.Invoke(new Action(() => AgregarPuntosAlGrafico(time, inyeccion, retorno)));
+                chartInyeccionRetorno.Invoke(new Action(() => AgregarPuntosGraficoInyeccionRetorno(time, inyeccion, retorno)));
             }
             else
             {
-                // Agregar puntos a las series
                 chartInyeccionRetorno.Series["Inyección"].Points.AddXY(time, inyeccion);
                 chartInyeccionRetorno.Series["Retorno"].Points.AddXY(time, retorno);
 
-                // Mantener un límite de puntos para evitar saturación
-                if (chartInyeccionRetorno.Series["Inyección"].Points.Count > 100)
-                {
-                    chartInyeccionRetorno.Series["Inyección"].Points.RemoveAt(0);
-                    chartInyeccionRetorno.Series["Retorno"].Points.RemoveAt(0);
-                }
+                AjustarEjes(chartInyeccionRetorno);
+            }
+        }
 
-                // Ajustar el eje X automáticamente
-                chartInyeccionRetorno.ChartAreas["Principal"].RecalculateAxesScale();
+        private void AgregarPuntosGraficoTemperaturaHumedad(string time, double tempRef, double humRef, double dewPoint)
+        {
+            if (chartTemperaturaHumedad.InvokeRequired)
+            {
+                chartTemperaturaHumedad.Invoke(new Action(() => AgregarPuntosGraficoTemperaturaHumedad(time, tempRef, humRef, dewPoint)));
+            }
+            else
+            {
+                chartTemperaturaHumedad.Series["TempRef"].Points.AddXY(time, tempRef);
+                chartTemperaturaHumedad.Series["HumRef"].Points.AddXY(time, humRef);
+                chartTemperaturaHumedad.Series["DewPoint"].Points.AddXY(time, dewPoint);
+
+                AjustarEjes(chartTemperaturaHumedad);
+            }
+        }
+
+        private void AjustarEjes(Chart chart)
+        {
+            var chartArea = chart.ChartAreas["Principal"];
+
+            foreach (var serie in chart.Series)
+            {
+                if (serie.Points.Count > 0)
+                {
+                    double minY = double.MaxValue;
+                    double maxY = double.MinValue;
+
+                    foreach (var point in serie.Points)
+                    {
+                        if (point.YValues[0] < minY) minY = point.YValues[0];
+                        if (point.YValues[0] > maxY) maxY = point.YValues[0];
+                    }
+
+                    chartArea.AxisY.Minimum = minY - 1; // Margen inferior
+                    chartArea.AxisY.Maximum = maxY + 1; // Margen superior
+                }
             }
         }
 
@@ -141,5 +206,6 @@ namespace WindowsFormsApp1
                 serialPort.Close();
             }
         }
+
     }
 }
