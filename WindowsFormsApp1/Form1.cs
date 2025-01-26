@@ -9,6 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
@@ -37,11 +40,29 @@ namespace WindowsFormsApp1
             try
             {
                 string json = serialPort.ReadLine();
-                MostrarDatosEnPantalla(json);
+                ProcesarJson(json);
             }
             catch (Exception ex)
             {
-                MostrarDatosEnPantalla("Error: " + ex.Message);
+                MostrarDatosEnPantalla("Error al leer datos: " + ex.Message);
+            }
+        }
+
+        private void ProcesarJson(string json)
+        {
+            try
+            {
+                // Validar el JSON y formatearlo con indentación.
+                JObject jsonObject = JObject.Parse(json);
+                string jsonFormateado = jsonObject.ToString(Formatting.Indented);
+
+                // Mostrar el JSON formateado en el TextBox.
+                MostrarDatosEnPantalla(jsonFormateado);
+            }
+            catch (JsonReaderException)
+            {
+                // Si el JSON es inválido, mostrar un mensaje de error.
+                MostrarDatosEnPantalla("Error: El JSON recibido no es válido.");
             }
         }
 
@@ -64,6 +85,5 @@ namespace WindowsFormsApp1
                 serialPort.Close();
             }
         }
-
     }
 }
