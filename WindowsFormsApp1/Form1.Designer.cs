@@ -29,10 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.serialPort = new System.IO.Ports.SerialPort(this.components);
             this.chartInyeccionRetorno = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -41,12 +39,14 @@
             // 
             // txtOutput
             // 
-            this.txtOutput.Location = new System.Drawing.Point(75, 371);
+            this.txtOutput.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.txtOutput.Location = new System.Drawing.Point(0, 404);
             this.txtOutput.Multiline = true;
             this.txtOutput.Name = "txtOutput";
             this.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtOutput.Size = new System.Drawing.Size(661, 67);
+            this.txtOutput.Size = new System.Drawing.Size(800, 46);
             this.txtOutput.TabIndex = 0;
+            this.txtOutput.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // serialPort
             // 
@@ -54,22 +54,15 @@
             // 
             // chartInyeccionRetorno
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chartInyeccionRetorno.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chartInyeccionRetorno.Legends.Add(legend1);
+            this.chartInyeccionRetorno.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            chartArea2.Name = "ChartArea1";
+            this.chartInyeccionRetorno.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chartInyeccionRetorno.Legends.Add(legend2);
             this.chartInyeccionRetorno.Location = new System.Drawing.Point(75, 12);
             this.chartInyeccionRetorno.Name = "chartInyeccionRetorno";
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.Legend = "Legend1";
-            series1.Name = "inyeccion";
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series2.Legend = "Legend1";
-            series2.Name = "retorno";
-            this.chartInyeccionRetorno.Series.Add(series1);
-            this.chartInyeccionRetorno.Series.Add(series2);
             this.chartInyeccionRetorno.Size = new System.Drawing.Size(661, 341);
             this.chartInyeccionRetorno.TabIndex = 1;
             this.chartInyeccionRetorno.Text = "chart1";
