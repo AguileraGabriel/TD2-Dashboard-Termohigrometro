@@ -61,7 +61,18 @@ namespace WindowsFormsApp1
 
         private void ConfigurarGraficoTemperaturaHumedad()
         {
-            chartTemperaturaHumedad.ChartAreas.Add(new ChartArea("Principal"));
+            var chartArea = new ChartArea("Principal");
+            chartTemperaturaHumedad.ChartAreas.Add(chartArea);
+
+            // Configurar el eje Y izquierdo para tempRef y dewPoint
+            chartArea.AxisY.Title = "Temperatura (°C)";
+            chartArea.AxisY.IsStartedFromZero = false;
+
+            // Configurar el eje Y derecho para humRef
+            chartArea.AxisY2.Title = "Humedad (%)";
+            chartArea.AxisY2.Enabled = AxisEnabled.True;
+            chartArea.AxisY2.Minimum = 0;
+            chartArea.AxisY2.Maximum = 100;
 
             // Configurar la serie para tempRef
             var serieTempRef = new Series("TempRef")
@@ -72,15 +83,6 @@ namespace WindowsFormsApp1
             };
             chartTemperaturaHumedad.Series.Add(serieTempRef);
 
-            // Configurar la serie para humRef
-            var serieHumRef = new Series("HumRef")
-            {
-                ChartType = SeriesChartType.Line,
-                XValueType = ChartValueType.Time,
-                YValueType = ChartValueType.Double
-            };
-            chartTemperaturaHumedad.Series.Add(serieHumRef);
-
             // Configurar la serie para dewPoint
             var serieDewPoint = new Series("DewPoint")
             {
@@ -89,6 +91,16 @@ namespace WindowsFormsApp1
                 YValueType = ChartValueType.Double
             };
             chartTemperaturaHumedad.Series.Add(serieDewPoint);
+
+            // Configurar la serie para humRef con eje Y secundario
+            var serieHumRef = new Series("HumRef")
+            {
+                ChartType = SeriesChartType.Line,
+                XValueType = ChartValueType.Time,
+                YValueType = ChartValueType.Double,
+                YAxisType = AxisType.Secondary // Asignar al eje Y2
+            };
+            chartTemperaturaHumedad.Series.Add(serieHumRef);
         }
 
         private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -170,7 +182,7 @@ namespace WindowsFormsApp1
 
             foreach (var serie in chart.Series)
             {
-                if (serie.Points.Count > 0)
+                if (serie.Points.Count > 0 && serie.YAxisType == AxisType.Primary)
                 {
                     double minY = double.MaxValue;
                     double maxY = double.MinValue;
