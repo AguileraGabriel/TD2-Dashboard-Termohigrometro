@@ -29,6 +29,17 @@ namespace WindowsFormsApp1
                 // Configurar el puerto serie
                 serialPort.DataReceived += SerialPort_DataReceived;
                 serialPort.Open();
+
+                // Poblar el ComboBox con los puertos disponibles
+                string[] ports = SerialPort.GetPortNames();
+                cmbPorts.Items.AddRange(ports);
+
+                if (cmbPorts.Items.Count > 0)
+                {
+                    cmbPorts.SelectedIndex = 0; // Seleccionar el primer puerto disponible
+                }
+
+                btnConnect.Click += BtnConnect_Click;
             }
             catch (Exception ex)
             {
@@ -36,6 +47,25 @@ namespace WindowsFormsApp1
             }
         }
 
+
+        private void BtnConnect_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (serialPort.IsOpen)
+                {
+                    serialPort.Close();
+                }
+
+                serialPort.PortName = cmbPorts.SelectedItem.ToString();
+                serialPort.Open();
+                MessageBox.Show("Conectado a " + serialPort.PortName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al abrir el puerto: " + ex.Message);
+            }
+        }
         private void ConfigurarGraficoInyeccionRetorno()
         {
             chartInyeccionRetorno.ChartAreas.Add(new ChartArea("Principal"));
@@ -219,5 +249,19 @@ namespace WindowsFormsApp1
             }
         }
 
+        private void chartInyeccionRetorno_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmbPorts_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chartTemperaturaHumedad_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
