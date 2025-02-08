@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 
+
 namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
@@ -118,7 +119,7 @@ namespace WindowsFormsApp1
             chartArea.AxisY2.Maximum = 100;
             chartArea.AxisY2.MajorGrid.Enabled = false;
             chartArea.AxisY2.LabelStyle.Enabled = true;
-            chartArea.AxisY2.TitleAlignment = StringAlignment.Far;
+            //chartArea.AxisY2.TitleAlignment = StringAlignment.Far;
 
             // Configurar la serie para tempRef
             var serieTempRef = new Series("TempRef")
@@ -162,7 +163,72 @@ namespace WindowsFormsApp1
                 MostrarDatosEnPantalla("Error al leer datos: " + ex.Message);
             }
         }
+        private void ProcesarJson(string json)
+        {
+            try
+            {
+                JObject jsonObject = JObject.Parse(json);
+                string jsonFormateado = jsonObject.ToString(Formatting.Indented);
 
+                MostrarDatosEnPantalla(jsonFormateado);
+
+                // Extraer el valor de "modo" (0, 1 o 2)
+                int modo = jsonObject["modo"]?.Value<int>() ?? -1;
+
+                // Traducir el valor de "modo" a su descripción
+                string modoDescripcion = ObtenerDescripcionModo(modo);
+
+                // Mostrar el modo en el label
+                MostrarModo(modoDescripcion);
+
+                // Extraer datos para el primer gráfico
+                double inyeccion = jsonObject["inyeccion"]?.Value<double>() ?? 0;
+                double retorno = jsonObject["retorno"]?.Value<double>() ?? 0;
+                string time = jsonObject["time"]?.Value<string>() ?? DateTime.Now.ToString("HH:mm:ss");
+
+                AgregarPuntosGraficoInyeccionRetorno(time, inyeccion, retorno);
+
+                // Extraer datos para el segundo gráfico
+                double tempRef = jsonObject["tempRef"]?.Value<double>() ?? 0;
+                double humRef = jsonObject["humRef"]?.Value<double>() ?? 0;
+                double dewPoint = jsonObject["dewPoint"]?.Value<double>() ?? 0;
+
+                AgregarPuntosGraficoTemperaturaHumedad(time, tempRef, humRef, dewPoint);
+            }
+            catch (JsonReaderException)
+            {
+                MostrarDatosEnPantalla("Error: El JSON recibido no es válido.");
+            }
+        }
+
+        private string ObtenerDescripcionModo(int modo)
+        {
+            switch (modo)
+            {
+                case 0:
+                    return "Refrigeración";
+                case 1:
+                    return "Calefacción";
+                case 2:
+                    return "Termohigrómetro";
+                default:
+                    return "Modo desconocido";
+            }
+        }
+
+        private void MostrarModo(string modo)
+        {
+            if (lblModo.InvokeRequired)
+            {
+                lblModo.Invoke(new Action(() => lblModo.Text = "Modo: " + modo));
+            }
+            else
+            {
+                lblModo.Text = "Modo: " + modo;
+            }
+        }
+
+        /*
         private void ProcesarJson(string json)
         {
             try
@@ -191,7 +257,7 @@ namespace WindowsFormsApp1
                 MostrarDatosEnPantalla("Error: El JSON recibido no es válido.");
             }
         }
-
+        */
         private void AgregarPuntosGraficoInyeccionRetorno(string time, double inyeccion, double retorno)
         {
             if (chartInyeccionRetorno.InvokeRequired)
@@ -223,78 +289,6 @@ namespace WindowsFormsApp1
             }
         }
 
-        /*private void AjustarEjes(Chart chart)
-        {
-            var chartArea = chart.ChartAreas["Principal"];
-
-            foreach (var serie in chart.Series)
-            {
-                if (serie.Points.Count > 0 && serie.YAxisType == AxisType.Primary)
-                {
-                    double minY = double.MaxValue;
-                    double maxY = double.MinValue;
-
-                    foreach (var point in serie.Points)
-                    {
-                        if (point.YValues[0] < minY) minY = point.YValues[0];
-                        if (point.YValues[0] > maxY) maxY = point.YValues[0];
-                    }
-
-                    chartArea.AxisY.Minimum = minY - 1; // Margen inferior
-                    chartArea.AxisY.Maximum = maxY + 1; // Margen superior
-                }
-            }
-        }
-        */
-        /*
-        private void AjustarEjes(Chart chart)
-        {
-            var chartArea = chart.ChartAreas["Principal"];
-
-            // Verifica si es el gráfico de temperatura y humedad
-            if (chart == chartTemperaturaHumedad)
-            {
-                // Usar exclusivamente "TempRef" para ajustar el eje Y primario
-                Series tempRefSerie = chart.Series["TempRef"];
-
-                if (tempRefSerie.Points.Count > 0)
-                {
-                    double minY = double.MaxValue;
-                    double maxY = double.MinValue;
-
-                    foreach (var point in tempRefSerie.Points)
-                    {
-                        if (point.YValues[0] < minY) minY = point.YValues[0];
-                        if (point.YValues[0] > maxY) maxY = point.YValues[0];
-                    }
-
-                    chartArea.AxisY.Minimum = minY - 1; // Margen inferior
-                    chartArea.AxisY.Maximum = maxY + 1; // Margen superior
-                }
-            }
-            else
-            {
-                // Para otros gráficos, mantener el ajuste de ejes como estaba
-                foreach (var serie in chart.Series)
-                {
-                    if (serie.Points.Count > 0 && serie.YAxisType == AxisType.Primary)
-                    {
-                        double minY = double.MaxValue;
-                        double maxY = double.MinValue;
-
-                        foreach (var point in serie.Points)
-                        {
-                            if (point.YValues[0] < minY) minY = point.YValues[0];
-                            if (point.YValues[0] > maxY) maxY = point.YValues[0];
-                        }
-
-                        chartArea.AxisY.Minimum = minY - 1;
-                        chartArea.AxisY.Maximum = maxY + 1;
-                    }
-                }
-            }
-        }
-        */
         private void AjustarEjes(Chart chart)
         {
             var chartArea = chart.ChartAreas["Principal"];
@@ -386,6 +380,16 @@ namespace WindowsFormsApp1
         }
 
         private void chartTemperaturaHumedad_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
         {
 
         }
