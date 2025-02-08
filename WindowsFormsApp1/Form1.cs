@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO.Ports;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -68,7 +69,14 @@ namespace WindowsFormsApp1
         }
         private void ConfigurarGraficoInyeccionRetorno()
         {
-            chartInyeccionRetorno.ChartAreas.Add(new ChartArea("Principal"));
+            var chartArea = new ChartArea("Principal");
+            chartInyeccionRetorno.ChartAreas.Add(chartArea);
+            //chartInyeccionRetorno.ChartAreas.Add(new ChartArea("Principal"));
+
+            // Configurar el eje Y izquierdo (Temperatura)
+            chartArea.AxisY.Title = "Temperatura (°C)";
+            chartArea.AxisY.IsStartedFromZero = false;
+
 
             // Configurar la serie para inyección
             var serieInyeccion = new Series("Inyección")
@@ -94,15 +102,23 @@ namespace WindowsFormsApp1
             var chartArea = new ChartArea("Principal");
             chartTemperaturaHumedad.ChartAreas.Add(chartArea);
 
-            // Configurar el eje Y izquierdo para tempRef y dewPoint
+            // Ajustar tamaño del área del gráfico para evitar desbordamientos
+            //chartArea.Position = new ElementPosition(0, 0, 100, 100);
+            //chartArea.InnerPlotPosition = new ElementPosition(10, 10, 80, 80);
+            //chartArea.InnerPlotPosition = new ElementPosition(10, 5, 85, 85);
+
+            // Configurar el eje Y izquierdo (Temperatura)
             chartArea.AxisY.Title = "Temperatura (°C)";
             chartArea.AxisY.IsStartedFromZero = false;
 
-            // Configurar el eje Y derecho para humRef
+            // Configurar el eje Y derecho (Humedad)
             chartArea.AxisY2.Title = "Humedad (%)";
             chartArea.AxisY2.Enabled = AxisEnabled.True;
             chartArea.AxisY2.Minimum = 0;
             chartArea.AxisY2.Maximum = 100;
+            chartArea.AxisY2.MajorGrid.Enabled = false;
+            chartArea.AxisY2.LabelStyle.Enabled = true;
+            chartArea.AxisY2.TitleAlignment = StringAlignment.Far;
 
             // Configurar la serie para tempRef
             var serieTempRef = new Series("TempRef")
@@ -132,6 +148,7 @@ namespace WindowsFormsApp1
             };
             chartTemperaturaHumedad.Series.Add(serieHumRef);
         }
+
 
         private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
@@ -206,7 +223,7 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void AjustarEjes(Chart chart)
+        /*private void AjustarEjes(Chart chart)
         {
             var chartArea = chart.ChartAreas["Principal"];
 
@@ -225,6 +242,115 @@ namespace WindowsFormsApp1
 
                     chartArea.AxisY.Minimum = minY - 1; // Margen inferior
                     chartArea.AxisY.Maximum = maxY + 1; // Margen superior
+                }
+            }
+        }
+        */
+        /*
+        private void AjustarEjes(Chart chart)
+        {
+            var chartArea = chart.ChartAreas["Principal"];
+
+            // Verifica si es el gráfico de temperatura y humedad
+            if (chart == chartTemperaturaHumedad)
+            {
+                // Usar exclusivamente "TempRef" para ajustar el eje Y primario
+                Series tempRefSerie = chart.Series["TempRef"];
+
+                if (tempRefSerie.Points.Count > 0)
+                {
+                    double minY = double.MaxValue;
+                    double maxY = double.MinValue;
+
+                    foreach (var point in tempRefSerie.Points)
+                    {
+                        if (point.YValues[0] < minY) minY = point.YValues[0];
+                        if (point.YValues[0] > maxY) maxY = point.YValues[0];
+                    }
+
+                    chartArea.AxisY.Minimum = minY - 1; // Margen inferior
+                    chartArea.AxisY.Maximum = maxY + 1; // Margen superior
+                }
+            }
+            else
+            {
+                // Para otros gráficos, mantener el ajuste de ejes como estaba
+                foreach (var serie in chart.Series)
+                {
+                    if (serie.Points.Count > 0 && serie.YAxisType == AxisType.Primary)
+                    {
+                        double minY = double.MaxValue;
+                        double maxY = double.MinValue;
+
+                        foreach (var point in serie.Points)
+                        {
+                            if (point.YValues[0] < minY) minY = point.YValues[0];
+                            if (point.YValues[0] > maxY) maxY = point.YValues[0];
+                        }
+
+                        chartArea.AxisY.Minimum = minY - 1;
+                        chartArea.AxisY.Maximum = maxY + 1;
+                    }
+                }
+            }
+        }
+        */
+        private void AjustarEjes(Chart chart)
+        {
+            var chartArea = chart.ChartAreas["Principal"];
+
+            // Verifica si es el gráfico de temperatura y humedad
+            if (chart == chartTemperaturaHumedad)
+            {
+                // Obtener las series "TempRef" y "DewPoint"
+                Series tempRefSerie = chart.Series["TempRef"];
+                Series dewPointSerie = chart.Series["DewPoint"];
+
+                if (tempRefSerie.Points.Count > 0 || dewPointSerie.Points.Count > 0)
+                {
+                    double minY = double.MaxValue;
+                    double maxY = double.MinValue;
+
+                    // Evaluar TempRef
+                    foreach (var point in tempRefSerie.Points)
+                    {
+                        if (point.YValues[0] < minY) minY = point.YValues[0];
+                        if (point.YValues[0] > maxY) maxY = point.YValues[0];
+                    }
+
+                    // Evaluar DewPoint
+                    foreach (var point in dewPointSerie.Points)
+                    {
+                        if (point.YValues[0] < minY) minY = point.YValues[0];
+                        if (point.YValues[0] > maxY) maxY = point.YValues[0];
+                    }
+
+                    // Ajustar el eje Y con paso fijo de 1°C
+                    chartArea.AxisY.Minimum = Math.Floor(minY) - 1; // Redondear hacia abajo
+                    chartArea.AxisY.Maximum = Math.Ceiling(maxY) + 1; // Redondear hacia arriba
+                    chartArea.AxisY.Interval = 2; // Paso de 1°C
+                }
+            }
+            else
+            {
+                // Ajustar ejes normalmente para otros gráficos
+                foreach (var serie in chart.Series)
+                {
+                    if (serie.Points.Count > 0 && serie.YAxisType == AxisType.Primary)
+                    {
+                        double minY = double.MaxValue;
+                        double maxY = double.MinValue;
+
+                        foreach (var point in serie.Points)
+                        {
+                            if (point.YValues[0] < minY) minY = point.YValues[0];
+                            if (point.YValues[0] > maxY) maxY = point.YValues[0];
+                        }
+
+                        chartArea.AxisY.Minimum = Math.Floor(minY) - 1;
+                        chartArea.AxisY.Maximum = Math.Ceiling(maxY) + 1;
+                        chartArea.AxisY.Interval = 2; // Paso de 1°C
+                    }
                 }
             }
         }

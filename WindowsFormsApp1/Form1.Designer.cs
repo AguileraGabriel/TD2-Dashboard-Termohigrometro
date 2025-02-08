@@ -29,10 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.serialPort = new System.IO.Ports.SerialPort(this.components);
             this.chartInyeccionRetorno = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -64,32 +60,28 @@
             this.chartInyeccionRetorno.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            chartArea1.Name = "ChartArea1";
-            this.chartInyeccionRetorno.ChartAreas.Add(chartArea1);
+            this.chartInyeccionRetorno.BackColor = System.Drawing.Color.Transparent;
+            this.chartInyeccionRetorno.BorderlineColor = System.Drawing.Color.Transparent;
+            this.chartInyeccionRetorno.BorderSkin.BackColor = System.Drawing.Color.Transparent;
+            this.chartInyeccionRetorno.BorderSkin.PageColor = System.Drawing.Color.Transparent;
             this.chartInyeccionRetorno.Cursor = System.Windows.Forms.Cursors.Cross;
-            legend1.Name = "Legend1";
-            this.chartInyeccionRetorno.Legends.Add(legend1);
             this.chartInyeccionRetorno.Location = new System.Drawing.Point(60, 86);
             this.chartInyeccionRetorno.Name = "chartInyeccionRetorno";
             this.chartInyeccionRetorno.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.chartInyeccionRetorno.Size = new System.Drawing.Size(977, 257);
+            this.chartInyeccionRetorno.Size = new System.Drawing.Size(977, 159);
             this.chartInyeccionRetorno.TabIndex = 1;
             this.chartInyeccionRetorno.Text = "chart1";
             this.chartInyeccionRetorno.Click += new System.EventHandler(this.chartInyeccionRetorno_Click);
             // 
             // chartTemperaturaHumedad
             // 
-            this.chartTemperaturaHumedad.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.chartTemperaturaHumedad.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            chartArea2.Name = "ChartArea1";
-            this.chartTemperaturaHumedad.ChartAreas.Add(chartArea2);
+            this.chartTemperaturaHumedad.BackColor = System.Drawing.Color.Transparent;
             this.chartTemperaturaHumedad.Cursor = System.Windows.Forms.Cursors.Cross;
-            legend2.Name = "Legend1";
-            this.chartTemperaturaHumedad.Legends.Add(legend2);
-            this.chartTemperaturaHumedad.Location = new System.Drawing.Point(60, 359);
+            this.chartTemperaturaHumedad.Location = new System.Drawing.Point(60, 293);
             this.chartTemperaturaHumedad.Name = "chartTemperaturaHumedad";
-            this.chartTemperaturaHumedad.Size = new System.Drawing.Size(977, 257);
+            this.chartTemperaturaHumedad.Size = new System.Drawing.Size(977, 319);
             this.chartTemperaturaHumedad.TabIndex = 2;
             this.chartTemperaturaHumedad.Text = "chart1";
             this.chartTemperaturaHumedad.Click += new System.EventHandler(this.chartTemperaturaHumedad_Click);
@@ -116,8 +108,7 @@
             // 
             // textBox1
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox1.Location = new System.Drawing.Point(344, 12);
@@ -132,11 +123,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1090, 675);
+            this.Controls.Add(this.chartTemperaturaHumedad);
+            this.Controls.Add(this.chartInyeccionRetorno);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.cmbPorts);
-            this.Controls.Add(this.chartTemperaturaHumedad);
-            this.Controls.Add(this.chartInyeccionRetorno);
             this.Controls.Add(this.txtOutput);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -151,11 +142,11 @@
 
         private System.Windows.Forms.TextBox txtOutput;
         private System.IO.Ports.SerialPort serialPort;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartInyeccionRetorno;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartTemperaturaHumedad;
         private System.Windows.Forms.ComboBox cmbPorts;
         private System.Windows.Forms.Button btnConnect;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartInyeccionRetorno;
     }
 }
 
