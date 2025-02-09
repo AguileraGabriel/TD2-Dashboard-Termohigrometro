@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.IO.Ports;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -13,6 +14,8 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
+        private const int IntervaloTemp = 2;
+
         public Form1()
         {
             InitializeComponent();
@@ -22,31 +25,39 @@ namespace WindowsFormsApp1
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            try
+            bool connected = false;
+            while (!connected)
             {
-                // Configurar ambos gráficos
-                ConfigurarGraficoInyeccionRetorno();
-                ConfigurarGraficoTemperaturaHumedad();
-
-                // Configurar el puerto serie
-                serialPort.DataReceived += SerialPort_DataReceived;
-                serialPort.Open();
-
-                // Poblar el ComboBox con los puertos disponibles
-                string[] ports = SerialPort.GetPortNames();
-                cmbPorts.Items.AddRange(ports);
-
-                if (cmbPorts.Items.Count > 0)
+                try
                 {
-                    cmbPorts.SelectedIndex = 0; // Seleccionar el primer puerto disponible
-                }
+                    // Configurar ambos gráficos
+                    ConfigurarGraficoInyeccionRetorno();
+                    ConfigurarGraficoTemperaturaHumedad();
 
-                btnConnect.Click += BtnConnect_Click;
+                    // Configurar el puerto serie
+                    serialPort.DataReceived += SerialPort_DataReceived;
+                    serialPort.Open();
+
+                    // Poblar el ComboBox con los puertos disponibles
+                    string[] ports = SerialPort.GetPortNames();
+                    cmbPorts.Items.AddRange(ports);
+
+                    if (cmbPorts.Items.Count > 0)
+                    {
+                        cmbPorts.SelectedIndex = 0; // Seleccionar el primer puerto disponible
+                    }
+
+                    btnConnect.Click += BtnConnect_Click;
+                    connected = true;
+                }
+              
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al abrir el puerto: " + ex.Message);
+                    
+                }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al abrir el puerto: " + ex.Message);
-            }
+            
         }
 
 
@@ -68,40 +79,71 @@ namespace WindowsFormsApp1
                 MessageBox.Show("Error al abrir el puerto: " + ex.Message);
             }
         }
+
+        private ChartArea ForceCreateChartArea(Chart chart ,string chartAreaName)
+        {
+            // Check if the ChartArea exists before adding it
+            if (chart.ChartAreas.IndexOf(chartAreaName) != -1)
+            {
+                chart.ChartAreas.Remove(chart.ChartAreas[chartAreaName]);
+            }
+            // Now add the new ChartArea
+            var chartArea = new ChartArea(chartAreaName);
+            chart.ChartAreas.Add(chartArea);
+            return chartArea;
+        }
+
+        private Series ForceCreateSeries(Chart chart, string seriesName)
+        {
+            // Check if the Series exists before adding it
+            if (chart.Series.IndexOf(seriesName) != -1)
+            {
+                chart.Series.Remove(chart.Series[seriesName]);
+            }
+            // Now add the new Series
+            var series = new Series (seriesName);
+            chart.Series.Add(series);
+            return series;
+        }
+
         private void ConfigurarGraficoInyeccionRetorno()
         {
-            var chartArea = new ChartArea("Principal");
-            chartInyeccionRetorno.ChartAreas.Add(chartArea);
+            var chartArea = ForceCreateChartArea(chartInyeccionRetorno, "Principal");
             //chartInyeccionRetorno.ChartAreas.Add(new ChartArea("Principal"));
 
             // Configurar el eje Y izquierdo (Temperatura)
             chartArea.AxisY.Title = "Temperatura (°C)";
             chartArea.AxisY.IsStartedFromZero = false;
 
+            // Set thinner and dashed grid lines for the Y-axis (Temperature)
+            chartArea.AxisY.MajorGrid.LineWidth = 1; // Makes it thinner
+            chartArea.AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dash; // Dashed style
+            chartArea.AxisY.MajorGrid.LineColor = Color.LightGray;
+
+            // Set thinner and dashed grid lines for the X-axis (Time or other)
+            chartArea.AxisX.MajorGrid.LineWidth = 1;
+            chartArea.AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dash;
+            chartArea.AxisX.MajorGrid.LineColor = Color.LightGray;
 
             // Configurar la serie para inyección
-            var serieInyeccion = new Series("Inyección")
-            {
-                ChartType = SeriesChartType.Line,
-                XValueType = ChartValueType.Time,
-                YValueType = ChartValueType.Double
-            };
-            chartInyeccionRetorno.Series.Add(serieInyeccion);
+            var serieInyeccion = ForceCreateSeries(chartInyeccionRetorno, "Inyección");
+            serieInyeccion.ChartType = SeriesChartType.Line;
+            serieInyeccion.XValueType = ChartValueType.Time;
+            serieInyeccion.YValueType = ChartValueType.Double;
 
-            // Configurar la serie para retorno
-            var serieRetorno = new Series("Retorno")
-            {
-                ChartType = SeriesChartType.Line,
-                XValueType = ChartValueType.Time,
-                YValueType = ChartValueType.Double
-            };
-            chartInyeccionRetorno.Series.Add(serieRetorno);
+
+            // Configurar la serie para retorno          
+            var serieRetorno = ForceCreateSeries(chartInyeccionRetorno, "Retorno");
+            serieRetorno.ChartType = SeriesChartType.Line;
+            serieRetorno.XValueType = ChartValueType.Time;
+            serieRetorno.YValueType = ChartValueType.Double;
+
         }
 
         private void ConfigurarGraficoTemperaturaHumedad()
         {
-            var chartArea = new ChartArea("Principal");
-            chartTemperaturaHumedad.ChartAreas.Add(chartArea);
+            var chartArea = ForceCreateChartArea(chartTemperaturaHumedad, "Principal");
+            
 
             // Ajustar tamaño del área del gráfico para evitar desbordamientos
             //chartArea.Position = new ElementPosition(0, 0, 100, 100);
@@ -121,33 +163,38 @@ namespace WindowsFormsApp1
             chartArea.AxisY2.LabelStyle.Enabled = true;
             //chartArea.AxisY2.TitleAlignment = StringAlignment.Far;
 
+            // Set thinner and dashed grid lines for the Y-axis (Temperature)
+            chartArea.AxisY.MajorGrid.LineWidth = 1; // Makes it thinner
+            chartArea.AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dash; // Dashed style
+            chartArea.AxisY.MajorGrid.LineColor = Color.LightGray;
+
+
+            // Set thinner and dashed grid lines for the X-axis (Time or other)
+            chartArea.AxisX.MajorGrid.LineWidth = 1;
+            chartArea.AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dash;
+            chartArea.AxisX.MajorGrid.LineColor = Color.LightGray;
+
+
             // Configurar la serie para tempRef
-            var serieTempRef = new Series("TempRef")
-            {
-                ChartType = SeriesChartType.Line,
-                XValueType = ChartValueType.Time,
-                YValueType = ChartValueType.Double
-            };
-            chartTemperaturaHumedad.Series.Add(serieTempRef);
+            var serieTempRef = ForceCreateSeries(chartTemperaturaHumedad, "TempRef");
+            serieTempRef.ChartType = SeriesChartType.Line;
+            serieTempRef.XValueType = ChartValueType.Time;
+            serieTempRef.YValueType = ChartValueType.Double;
+
 
             // Configurar la serie para dewPoint
-            var serieDewPoint = new Series("DewPoint")
-            {
-                ChartType = SeriesChartType.Line,
-                XValueType = ChartValueType.Time,
-                YValueType = ChartValueType.Double
-            };
-            chartTemperaturaHumedad.Series.Add(serieDewPoint);
+            var serieDewPoint = ForceCreateSeries(chartTemperaturaHumedad, "DewPoint");
+            serieDewPoint.ChartType = SeriesChartType.Line;
+            serieDewPoint.XValueType = ChartValueType.Time;
+            serieDewPoint.YValueType = ChartValueType.Double;
 
             // Configurar la serie para humRef con eje Y secundario
-            var serieHumRef = new Series("HumRef")
-            {
-                ChartType = SeriesChartType.Line,
-                XValueType = ChartValueType.Time,
-                YValueType = ChartValueType.Double,
-                YAxisType = AxisType.Secondary // Asignar al eje Y2
-            };
-            chartTemperaturaHumedad.Series.Add(serieHumRef);
+            var serieHumRef = ForceCreateSeries(chartTemperaturaHumedad, "HumRef");
+            serieHumRef.ChartType = SeriesChartType.Line;
+            serieHumRef.XValueType = ChartValueType.Time;
+            serieHumRef.YValueType = ChartValueType.Double;
+            serieHumRef.YAxisType = AxisType.Secondary; // Asignar al eje Y2
+
         }
 
 
@@ -168,7 +215,7 @@ namespace WindowsFormsApp1
             try
             {
                 JObject jsonObject = JObject.Parse(json);
-                string jsonFormateado = jsonObject.ToString(Formatting.Indented);
+                string jsonFormateado = jsonObject.ToString(Formatting.None);
 
                 MostrarDatosEnPantalla(jsonFormateado);
 
@@ -322,7 +369,7 @@ namespace WindowsFormsApp1
                     // Ajustar el eje Y con paso fijo de 1°C
                     chartArea.AxisY.Minimum = Math.Floor(minY) - 1; // Redondear hacia abajo
                     chartArea.AxisY.Maximum = Math.Ceiling(maxY) + 1; // Redondear hacia arriba
-                    chartArea.AxisY.Interval = 2; // Paso de 1°C
+                    chartArea.AxisY.Interval = IntervaloTemp; // Paso de 2°C
                 }
             }
             else
@@ -343,7 +390,7 @@ namespace WindowsFormsApp1
 
                         chartArea.AxisY.Minimum = Math.Floor(minY) - 1;
                         chartArea.AxisY.Maximum = Math.Ceiling(maxY) + 1;
-                        chartArea.AxisY.Interval = 2; // Paso de 1°C
+                        chartArea.AxisY.Interval = IntervaloTemp; // Paso de 1°C
                     }
                 }
             }
@@ -390,6 +437,11 @@ namespace WindowsFormsApp1
         }
 
         private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
         {
 
         }

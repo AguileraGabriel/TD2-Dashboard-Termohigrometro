@@ -39,8 +39,10 @@
             this.btnConnect = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.lblModo = new System.Windows.Forms.Label();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.chartInyeccionRetorno)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartTemperaturaHumedad)).BeginInit();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtOutput
@@ -70,25 +72,26 @@
             this.chartInyeccionRetorno.Cursor = System.Windows.Forms.Cursors.Cross;
             legend1.Name = "Legend1";
             this.chartInyeccionRetorno.Legends.Add(legend1);
-            this.chartInyeccionRetorno.Location = new System.Drawing.Point(60, 86);
+            this.chartInyeccionRetorno.Location = new System.Drawing.Point(3, 3);
             this.chartInyeccionRetorno.Name = "chartInyeccionRetorno";
             this.chartInyeccionRetorno.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.chartInyeccionRetorno.Size = new System.Drawing.Size(719, 201);
+            this.chartInyeccionRetorno.Size = new System.Drawing.Size(741, 237);
             this.chartInyeccionRetorno.TabIndex = 1;
             this.chartInyeccionRetorno.Text = "chart1";
             this.chartInyeccionRetorno.Click += new System.EventHandler(this.chartInyeccionRetorno_Click);
             // 
             // chartTemperaturaHumedad
             // 
-            this.chartTemperaturaHumedad.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.chartTemperaturaHumedad.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chartTemperaturaHumedad.BackColor = System.Drawing.Color.Transparent;
             this.chartTemperaturaHumedad.Cursor = System.Windows.Forms.Cursors.Cross;
             legend2.Name = "Legend1";
             this.chartTemperaturaHumedad.Legends.Add(legend2);
-            this.chartTemperaturaHumedad.Location = new System.Drawing.Point(60, 293);
+            this.chartTemperaturaHumedad.Location = new System.Drawing.Point(3, 246);
             this.chartTemperaturaHumedad.Name = "chartTemperaturaHumedad";
-            this.chartTemperaturaHumedad.Size = new System.Drawing.Size(719, 319);
+            this.chartTemperaturaHumedad.Size = new System.Drawing.Size(741, 237);
             this.chartTemperaturaHumedad.TabIndex = 2;
             this.chartTemperaturaHumedad.Text = "chart1";
             this.chartTemperaturaHumedad.Click += new System.EventHandler(this.chartTemperaturaHumedad_Click);
@@ -97,7 +100,7 @@
             // 
             this.cmbPorts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbPorts.FormattingEnabled = true;
-            this.cmbPorts.Location = new System.Drawing.Point(871, 25);
+            this.cmbPorts.Location = new System.Drawing.Point(855, 25);
             this.cmbPorts.Name = "cmbPorts";
             this.cmbPorts.Size = new System.Drawing.Size(121, 24);
             this.cmbPorts.TabIndex = 3;
@@ -106,9 +109,9 @@
             // btnConnect
             // 
             this.btnConnect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnConnect.Location = new System.Drawing.Point(1003, 25);
+            this.btnConnect.Location = new System.Drawing.Point(982, 25);
             this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Size = new System.Drawing.Size(75, 23);
+            this.btnConnect.Size = new System.Drawing.Size(96, 23);
             this.btnConnect.TabIndex = 4;
             this.btnConnect.Text = "Conectar";
             this.btnConnect.UseVisualStyleBackColor = true;
@@ -137,14 +140,32 @@
             this.lblModo.Text = "label1";
             this.lblModo.Click += new System.EventHandler(this.label1_Click);
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75.30242F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 24.69758F));
+            this.tableLayoutPanel1.Controls.Add(this.chartInyeccionRetorno, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.chartTemperaturaHumedad, 0, 1);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(46, 104);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(992, 486);
+            this.tableLayoutPanel1.TabIndex = 8;
+            this.tableLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1090, 675);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.lblModo);
-            this.Controls.Add(this.chartTemperaturaHumedad);
-            this.Controls.Add(this.chartInyeccionRetorno);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.cmbPorts);
@@ -153,6 +174,7 @@
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.chartInyeccionRetorno)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartTemperaturaHumedad)).EndInit();
+            this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -168,6 +190,7 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartInyeccionRetorno;
         private System.Windows.Forms.Label lblModo;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
 }
 
