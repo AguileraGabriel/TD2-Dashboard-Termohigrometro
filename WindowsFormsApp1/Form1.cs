@@ -200,25 +200,18 @@ namespace WindowsFormsApp1
 
         private void ConfigurarGraficoGauge()
         {
-            //Clear any previous chartAreas
+            // Clear any previous chartAreas and series
             chartGauge.ChartAreas.Clear();
-
-            // Clear any previous series
             chartGauge.Series.Clear();
 
             var chartArea = ForceCreateChartArea(chartGauge, "Principal");
-            
-            // Create a new series and set its type to Doughnut
             var series = ForceCreateSeries(chartGauge, "Gauge");
             series.ChartType = SeriesChartType.Doughnut;
             series.IsValueShownAsLabel = false;
 
-            // Set a starting angle (adjust for your desired look)
-            series["PieStartAngle"] = "270";
-            // Optionally adjust the doughnut radius (percentage of the chart area)
+            // Initial custom property settings.
+            series["PieStartAngle"] = "180";
             series["DoughnutRadius"] = "60";
-
-            
         }
 
         private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -364,56 +357,67 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void ActualizarGraficoGauge(double saltoTermico)
+        private void ActualizarGraficoGauge(double saltoTermicoRaw)
         {
             if (chartGauge.InvokeRequired)
             {
-                chartGauge.Invoke(new Action(() => ActualizarGraficoGauge(saltoTermico)));
+                chartGauge.Invoke(new Action(() => ActualizarGraficoGauge(saltoTermicoRaw)));
+                return;
             }
-            else
-            {
-                var series = chartGauge.Series["Gauge"];
-                series.Points.Clear();
 
-                // Define the maximum value of your gauge
-                double maxValue = 3;
+            var saltoTermico = Math.Abs(saltoTermicoRaw);
 
-                // Ensure that our gauge value does not exceed the max
-                double valuePortion = Math.Min(saltoTermico, maxValue);
-                double remaining = maxValue - valuePortion;
+            var series = chartGauge.Series["Gauge"];
+            series.Points.Clear();
 
-                // Determine color based on your conditions:
-                Color gaugeColor;
-                if (saltoTermico < 1)
-                    gaugeColor = Color.Red;
-                else if (saltoTermico < 2)
-                    gaugeColor = Color.Yellow;
-                else // value >= 2
-                    gaugeColor = Color.Green;
+            // Visible gauge max value (half-circle)
+            double maxVisibleValue = 3;
+            // Total value (visible half + hidden half)
+            double totalValue = maxVisibleValue * 2;
 
-                // Add the data point for the gauge value
-                DataPoint dpValue = new DataPoint();
-                dpValue.YValues = new double[] { valuePortion };
-                dpValue.Color = gaugeColor;
-                series.Points.Add(dpValue);
+            // Ensure that our gauge value does not exceed the visible maximum
+            double valuePortion = Math.Min(saltoTermico, maxVisibleValue);
+            double remainingVisible = maxVisibleValue - valuePortion;
 
-                // Add the remaining part as a second point (use a light gray for contrast)
-                DataPoint dpRemaining = new DataPoint();
-                dpRemaining.YValues = new double[] { remaining };
-                dpRemaining.Color = Color.LightGray;
-                series.Points.Add(dpRemaining);
+            // Determine color based on your conditions:
+            Color gaugeColor;
+            if (saltoTermico < 1)
+                gaugeColor = Color.Red;
+            else if (saltoTermico < 2)
+                gaugeColor = Color.Yellow;
+            else // value >= 2
+                gaugeColor = Color.Green;
 
-               
+            // Data point 1: the gauge value (visible portion)
+            DataPoint dpValue = new DataPoint();
+            dpValue.YValues = new double[] { valuePortion };
+            dpValue.Color = gaugeColor;
+            series.Points.Add(dpValue);
 
-                // Optionally, hide the legend and remove unnecessary axes
-                chartGauge.Legends.Clear();
-                ChartArea ca = chartGauge.ChartAreas[0];
-                ca.AxisX.Enabled = AxisEnabled.False;
-                ca.AxisY.Enabled = AxisEnabled.False;
-                ca.BorderWidth = 0;
-                ca.BackColor = Color.Transparent;
-                 
-            }
+            // Data point 2: the remaining visible portion
+            DataPoint dpVisibleRemaining = new DataPoint();
+            dpVisibleRemaining.YValues = new double[] { remainingVisible };
+            dpVisibleRemaining.Color = Color.LightGray;
+            series.Points.Add(dpVisibleRemaining);
+
+            // Data point 3: the dummy (hidden) half. Its value equals maxVisibleValue.
+            DataPoint dpHidden = new DataPoint();
+            dpHidden.YValues = new double[] { maxVisibleValue };
+            dpHidden.Color = Color.Transparent;
+            series.Points.Add(dpHidden);
+
+            // Adjust custom properties so that the visible half is on top.
+            // "PieStartAngle" of 180 means the drawing begins at the left, so the top half will show your gauge.
+            series["PieStartAngle"] = "180";
+            series["DoughnutRadius"] = "60";
+
+            // Hide legend and axes for a clean look.
+            chartGauge.Legends.Clear();
+            ChartArea ca = chartGauge.ChartAreas[0];
+            ca.AxisX.Enabled = AxisEnabled.False;
+            ca.AxisY.Enabled = AxisEnabled.False;
+            ca.BorderWidth = 0;
+            ca.BackColor = Color.Transparent;
         }
 
         private void AjustarEjes(Chart chart)
