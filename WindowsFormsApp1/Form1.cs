@@ -33,6 +33,7 @@ namespace WindowsFormsApp1
                     // Configurar ambos gráficos
                     ConfigurarGraficoInyeccionRetorno();
                     ConfigurarGraficoTemperaturaHumedad();
+                    ConfigurarGraficoGauge();
 
                     // Configurar el puerto serie
                     serialPort.DataReceived += SerialPort_DataReceived;
@@ -139,7 +140,7 @@ namespace WindowsFormsApp1
             serieRetorno.YValueType = ChartValueType.Double;
 
         }
-
+        
         private void ConfigurarGraficoTemperaturaHumedad()
         {
             var chartArea = ForceCreateChartArea(chartTemperaturaHumedad, "Principal");
@@ -197,6 +198,28 @@ namespace WindowsFormsApp1
 
         }
 
+        private void ConfigurarGraficoGauge()
+        {
+            //Clear any previous chartAreas
+            chartGauge.ChartAreas.Clear();
+
+            // Clear any previous series
+            chartGauge.Series.Clear();
+
+            var chartArea = ForceCreateChartArea(chartGauge, "Principal");
+            
+            // Create a new series and set its type to Doughnut
+            var series = ForceCreateSeries(chartGauge, "Gauge");
+            series.ChartType = SeriesChartType.Doughnut;
+            series.IsValueShownAsLabel = false;
+
+            // Set a starting angle (adjust for your desired look)
+            series["PieStartAngle"] = "270";
+            // Optionally adjust the doughnut radius (percentage of the chart area)
+            series["DoughnutRadius"] = "60";
+
+            
+        }
 
         private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
@@ -241,6 +264,11 @@ namespace WindowsFormsApp1
                 double dewPoint = jsonObject["dewPoint"]?.Value<double>() ?? 0;
 
                 AgregarPuntosGraficoTemperaturaHumedad(time, tempRef, humRef, dewPoint);
+
+                // Extraer datos para el gráfico de gauge
+                double saltoTermico = jsonObject["saltoTermico"]?.Value<double>() ?? 0;
+
+                ActualizarGraficoGauge(saltoTermico);
             }
             catch (JsonReaderException)
             {
@@ -333,6 +361,58 @@ namespace WindowsFormsApp1
                 chartTemperaturaHumedad.Series["DewPoint"].Points.AddXY(time, dewPoint);
 
                 AjustarEjes(chartTemperaturaHumedad);
+            }
+        }
+
+        private void ActualizarGraficoGauge(double saltoTermico)
+        {
+            if (chartGauge.InvokeRequired)
+            {
+                chartGauge.Invoke(new Action(() => ActualizarGraficoGauge(saltoTermico)));
+            }
+            else
+            {
+                var series = chartGauge.Series["Gauge"];
+                series.Points.Clear();
+
+                // Define the maximum value of your gauge
+                double maxValue = 3;
+
+                // Ensure that our gauge value does not exceed the max
+                double valuePortion = Math.Min(saltoTermico, maxValue);
+                double remaining = maxValue - valuePortion;
+
+                // Determine color based on your conditions:
+                Color gaugeColor;
+                if (saltoTermico < 1)
+                    gaugeColor = Color.Red;
+                else if (saltoTermico < 2)
+                    gaugeColor = Color.Yellow;
+                else // value >= 2
+                    gaugeColor = Color.Green;
+
+                // Add the data point for the gauge value
+                DataPoint dpValue = new DataPoint();
+                dpValue.YValues = new double[] { valuePortion };
+                dpValue.Color = gaugeColor;
+                series.Points.Add(dpValue);
+
+                // Add the remaining part as a second point (use a light gray for contrast)
+                DataPoint dpRemaining = new DataPoint();
+                dpRemaining.YValues = new double[] { remaining };
+                dpRemaining.Color = Color.LightGray;
+                series.Points.Add(dpRemaining);
+
+               
+
+                // Optionally, hide the legend and remove unnecessary axes
+                chartGauge.Legends.Clear();
+                ChartArea ca = chartGauge.ChartAreas[0];
+                ca.AxisX.Enabled = AxisEnabled.False;
+                ca.AxisY.Enabled = AxisEnabled.False;
+                ca.BorderWidth = 0;
+                ca.BackColor = Color.Transparent;
+                 
             }
         }
 

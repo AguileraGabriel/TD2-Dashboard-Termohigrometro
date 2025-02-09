@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.serialPort = new System.IO.Ports.SerialPort(this.components);
             this.chartInyeccionRetorno = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -40,9 +41,11 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.lblModo = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.chartGauge = new System.Windows.Forms.DataVisualization.Charting.Chart();
             ((System.ComponentModel.ISupportInitialize)(this.chartInyeccionRetorno)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartTemperaturaHumedad)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartGauge)).BeginInit();
             this.SuspendLayout();
             // 
             // txtOutput
@@ -150,6 +153,7 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 24.69758F));
             this.tableLayoutPanel1.Controls.Add(this.chartInyeccionRetorno, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.chartTemperaturaHumedad, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.chartGauge, 1, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(46, 104);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
@@ -158,6 +162,20 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(992, 486);
             this.tableLayoutPanel1.TabIndex = 8;
             this.tableLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
+            // 
+            // chartGauge
+            // 
+            this.chartGauge.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chartGauge.BackColor = System.Drawing.Color.Transparent;
+            legend3.Name = "Legend1";
+            this.chartGauge.Legends.Add(legend3);
+            this.chartGauge.Location = new System.Drawing.Point(750, 3);
+            this.chartGauge.Name = "chartGauge";
+            this.chartGauge.Size = new System.Drawing.Size(239, 237);
+            this.chartGauge.TabIndex = 3;
+            this.chartGauge.Text = "chart1";
             // 
             // Form1
             // 
@@ -175,6 +193,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.chartInyeccionRetorno)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartTemperaturaHumedad)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chartGauge)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -191,6 +210,7 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chartInyeccionRetorno;
         private System.Windows.Forms.Label lblModo;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartGauge;
     }
 }
 
