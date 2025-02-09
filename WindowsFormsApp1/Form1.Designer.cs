@@ -40,22 +40,22 @@
             this.btnConnect = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.lblModo = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayout = new System.Windows.Forms.TableLayoutPanel();
             this.chartGauge = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.chartInyeccionRetorno)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartTemperaturaHumedad)).BeginInit();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tableLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartGauge)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // txtOutput
             // 
             this.txtOutput.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.txtOutput.Location = new System.Drawing.Point(0, 629);
-            this.txtOutput.Multiline = true;
+            this.txtOutput.Location = new System.Drawing.Point(0, 653);
             this.txtOutput.Name = "txtOutput";
-            this.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtOutput.Size = new System.Drawing.Size(1090, 46);
+            this.txtOutput.Size = new System.Drawing.Size(1090, 22);
             this.txtOutput.TabIndex = 0;
             this.txtOutput.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -78,7 +78,7 @@
             this.chartInyeccionRetorno.Location = new System.Drawing.Point(3, 3);
             this.chartInyeccionRetorno.Name = "chartInyeccionRetorno";
             this.chartInyeccionRetorno.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.chartInyeccionRetorno.Size = new System.Drawing.Size(741, 237);
+            this.chartInyeccionRetorno.Size = new System.Drawing.Size(759, 279);
             this.chartInyeccionRetorno.TabIndex = 1;
             this.chartInyeccionRetorno.Text = "chart1";
             this.chartInyeccionRetorno.Click += new System.EventHandler(this.chartInyeccionRetorno_Click);
@@ -92,9 +92,9 @@
             this.chartTemperaturaHumedad.Cursor = System.Windows.Forms.Cursors.Cross;
             legend2.Name = "Legend1";
             this.chartTemperaturaHumedad.Legends.Add(legend2);
-            this.chartTemperaturaHumedad.Location = new System.Drawing.Point(3, 246);
+            this.chartTemperaturaHumedad.Location = new System.Drawing.Point(3, 288);
             this.chartTemperaturaHumedad.Name = "chartTemperaturaHumedad";
-            this.chartTemperaturaHumedad.Size = new System.Drawing.Size(741, 237);
+            this.chartTemperaturaHumedad.Size = new System.Drawing.Size(759, 280);
             this.chartTemperaturaHumedad.TabIndex = 2;
             this.chartTemperaturaHumedad.Text = "chart1";
             this.chartTemperaturaHumedad.Click += new System.EventHandler(this.chartTemperaturaHumedad_Click);
@@ -136,32 +136,33 @@
             // 
             this.lblModo.AutoSize = true;
             this.lblModo.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblModo.Location = new System.Drawing.Point(42, 25);
+            this.lblModo.Location = new System.Drawing.Point(45, 23);
             this.lblModo.Name = "lblModo";
             this.lblModo.Size = new System.Drawing.Size(58, 22);
             this.lblModo.TabIndex = 7;
             this.lblModo.Text = "label1";
             this.lblModo.Click += new System.EventHandler(this.label1_Click);
             // 
-            // tableLayoutPanel1
+            // tableLayout
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.tableLayout.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75.30242F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 24.69758F));
-            this.tableLayoutPanel1.Controls.Add(this.chartInyeccionRetorno, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.chartTemperaturaHumedad, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.chartGauge, 1, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(46, 104);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(992, 486);
-            this.tableLayoutPanel1.TabIndex = 8;
-            this.tableLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
+            this.tableLayout.ColumnCount = 2;
+            this.tableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75.30242F));
+            this.tableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 24.69758F));
+            this.tableLayout.Controls.Add(this.chartInyeccionRetorno, 0, 0);
+            this.tableLayout.Controls.Add(this.chartTemperaturaHumedad, 0, 1);
+            this.tableLayout.Controls.Add(this.chartGauge, 1, 0);
+            this.tableLayout.Controls.Add(this.pictureBox1, 1, 1);
+            this.tableLayout.Location = new System.Drawing.Point(46, 76);
+            this.tableLayout.Name = "tableLayout";
+            this.tableLayout.RowCount = 2;
+            this.tableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayout.Size = new System.Drawing.Size(1017, 571);
+            this.tableLayout.TabIndex = 8;
+            this.tableLayout.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
             // 
             // chartGauge
             // 
@@ -171,18 +172,33 @@
             this.chartGauge.BackColor = System.Drawing.Color.Transparent;
             legend3.Name = "Legend1";
             this.chartGauge.Legends.Add(legend3);
-            this.chartGauge.Location = new System.Drawing.Point(750, 3);
+            this.chartGauge.Location = new System.Drawing.Point(768, 3);
             this.chartGauge.Name = "chartGauge";
-            this.chartGauge.Size = new System.Drawing.Size(239, 237);
+            this.chartGauge.Size = new System.Drawing.Size(246, 279);
             this.chartGauge.TabIndex = 3;
             this.chartGauge.Text = "chart1";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox1.Image = global::WindowsFormsApp1.Properties.Resources.Untitled;
+            this.pictureBox1.InitialImage = null;
+            this.pictureBox1.Location = new System.Drawing.Point(775, 295);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(10);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(232, 266);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 4;
+            this.pictureBox1.TabStop = false;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1090, 675);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tableLayout);
             this.Controls.Add(this.lblModo);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.btnConnect);
@@ -192,8 +208,9 @@
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.chartInyeccionRetorno)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartTemperaturaHumedad)).EndInit();
-            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayout.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chartGauge)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -209,8 +226,9 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartInyeccionRetorno;
         private System.Windows.Forms.Label lblModo;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tableLayout;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartGauge;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 

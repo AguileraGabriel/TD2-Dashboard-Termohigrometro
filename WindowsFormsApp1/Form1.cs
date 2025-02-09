@@ -385,7 +385,7 @@ namespace WindowsFormsApp1
                 gaugeColor = Color.Red;
             else if (saltoTermico < 2)
                 gaugeColor = Color.Yellow;
-            else // value >= 2
+            else // saltoTermico >= 2
                 gaugeColor = Color.Green;
 
             // Data point 1: the gauge value (visible portion)
@@ -407,17 +407,45 @@ namespace WindowsFormsApp1
             series.Points.Add(dpHidden);
 
             // Adjust custom properties so that the visible half is on top.
-            // "PieStartAngle" of 180 means the drawing begins at the left, so the top half will show your gauge.
+            // "PieStartAngle" of 180 means the drawing begins at the left,
+            // positioning your visible 180Â° gauge at the top half.
             series["PieStartAngle"] = "180";
             series["DoughnutRadius"] = "60";
 
-            // Hide legend and axes for a clean look.
+            // Hide the legend and axes for a clean look.
             chartGauge.Legends.Clear();
             ChartArea ca = chartGauge.ChartAreas[0];
             ca.AxisX.Enabled = AxisEnabled.False;
             ca.AxisY.Enabled = AxisEnabled.False;
             ca.BorderWidth = 0;
             ca.BackColor = Color.Transparent;
+
+            // ----- Add or update the center label -----
+            // Clear existing titles.
+            chartGauge.Titles.Clear();
+
+            // Create a new Title to display the value.
+            Title gaugeTitle = new Title();
+            gaugeTitle.Text = "Salto Termico: " + saltoTermico.ToString("0.##") + "°C"; // format as needed
+            gaugeTitle.Font = new Font("Arial", 11, FontStyle.Bold);
+            gaugeTitle.ForeColor = Color.Black;
+            // Do not dock automatically.
+            gaugeTitle.Docking = Docking.Top;
+            // Dock the title inside the ChartArea.
+            gaugeTitle.IsDockedInsideChartArea = true;
+            // Associate with your ChartArea (named "Principal" when created).
+            gaugeTitle.DockedToChartArea = "Principal";
+            // Set alignment to center.
+            gaugeTitle.Alignment = ContentAlignment.MiddleCenter;
+
+            // Position the title manually using percentages.
+            // Adjust these values if needed to perfectly center the text in your doughnut hole.
+            gaugeTitle.Position.X = 0;  // X position (percentage)
+            gaugeTitle.Position.Y = 50;  // Y position (percentage)
+            gaugeTitle.Position.Width = 100;  // Width percentage
+            gaugeTitle.Position.Height = 20; // Height percentage
+
+            chartGauge.Titles.Add(gaugeTitle);
         }
 
         private void AjustarEjes(Chart chart)
