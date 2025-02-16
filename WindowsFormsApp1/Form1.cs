@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.IO.Ports;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -469,26 +470,38 @@ namespace WindowsFormsApp1
                     chartArea.AxisY.Interval = IntervaloTemp; // Paso de 2°C
                 }
             }
-            else
+            // Para chartInyeccionRetorno, calculamos el mínimo y máximo global entre ambas series
+            else if (chart == chartInyeccionRetorno)
             {
-                // Ajustar ejes normalmente para otros gráficos
-                foreach (var serie in chart.Series)
+                double globalMin = double.MaxValue;
+                double globalMax = double.MinValue;
+
+                // Revisar la serie "Inyección"
+                if (chart.Series.IndexOf("Inyección") >= 0)
                 {
-                    if (serie.Points.Count > 0 && serie.YAxisType == AxisType.Primary)
+                    foreach (var point in chart.Series["Inyección"].Points)
                     {
-                        double minY = double.MaxValue;
-                        double maxY = double.MinValue;
-
-                        foreach (var point in serie.Points)
-                        {
-                            if (point.YValues[0] < minY) minY = point.YValues[0];
-                            if (point.YValues[0] > maxY) maxY = point.YValues[0];
-                        }
-
-                        chartArea.AxisY.Minimum = Math.Floor(minY) - 1;
-                        chartArea.AxisY.Maximum = Math.Ceiling(maxY) + 1;
-                        chartArea.AxisY.Interval = IntervaloTemp; // Paso de 1°C
+                        if (point.YValues[0] < globalMin) globalMin = point.YValues[0];
+                        if (point.YValues[0] > globalMax) globalMax = point.YValues[0];
                     }
+                }
+
+                // Revisar la serie "Retorno"
+                if (chart.Series.IndexOf("Retorno") >= 0)
+                {
+                    foreach (var point in chart.Series["Retorno"].Points)
+                    {
+                        if (point.YValues[0] < globalMin) globalMin = point.YValues[0];
+                        if (point.YValues[0] > globalMax) globalMax = point.YValues[0];
+                    }
+                }
+
+                // Si se han encontrado datos, ajustar el eje Y
+                if (globalMin != double.MaxValue && globalMax != double.MinValue)
+                {
+                    chartArea.AxisY.Minimum = Math.Floor(globalMin) - 1;
+                    chartArea.AxisY.Maximum = Math.Ceiling(globalMax) + 1;
+                    chartArea.AxisY.Interval = IntervaloTemp;
                 }
             }
         }
