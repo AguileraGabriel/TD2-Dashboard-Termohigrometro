@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend10 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend11 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend12 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.serialPort = new System.IO.Ports.SerialPort(this.components);
             this.chartInyeccionRetorno = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -73,8 +73,8 @@
             this.chartInyeccionRetorno.BorderSkin.BackColor = System.Drawing.Color.Transparent;
             this.chartInyeccionRetorno.BorderSkin.PageColor = System.Drawing.Color.Transparent;
             this.chartInyeccionRetorno.Cursor = System.Windows.Forms.Cursors.Cross;
-            legend1.Name = "Legend1";
-            this.chartInyeccionRetorno.Legends.Add(legend1);
+            legend10.Name = "Legend1";
+            this.chartInyeccionRetorno.Legends.Add(legend10);
             this.chartInyeccionRetorno.Location = new System.Drawing.Point(3, 3);
             this.chartInyeccionRetorno.Name = "chartInyeccionRetorno";
             this.chartInyeccionRetorno.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -90,8 +90,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chartTemperaturaHumedad.BackColor = System.Drawing.Color.Transparent;
             this.chartTemperaturaHumedad.Cursor = System.Windows.Forms.Cursors.Cross;
-            legend2.Name = "Legend1";
-            this.chartTemperaturaHumedad.Legends.Add(legend2);
+            legend11.Name = "Legend1";
+            this.chartTemperaturaHumedad.Legends.Add(legend11);
             this.chartTemperaturaHumedad.Location = new System.Drawing.Point(3, 288);
             this.chartTemperaturaHumedad.Name = "chartTemperaturaHumedad";
             this.chartTemperaturaHumedad.Size = new System.Drawing.Size(759, 280);
@@ -170,8 +170,8 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chartGauge.BackColor = System.Drawing.Color.Transparent;
-            legend3.Name = "Legend1";
-            this.chartGauge.Legends.Add(legend3);
+            legend12.Name = "Legend1";
+            this.chartGauge.Legends.Add(legend12);
             this.chartGauge.Location = new System.Drawing.Point(768, 3);
             this.chartGauge.Name = "chartGauge";
             this.chartGauge.Size = new System.Drawing.Size(246, 279);

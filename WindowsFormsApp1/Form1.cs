@@ -25,40 +25,25 @@ namespace WindowsFormsApp1
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            bool connected = false;
-            while (!connected)
+            // Configurar ambos gráficos
+            ConfigurarGraficoInyeccionRetorno();
+            ConfigurarGraficoTemperaturaHumedad();
+            ConfigurarGraficoGauge();
+
+            // Poblar el ComboBox con los puertos disponibles
+            string[] ports = SerialPort.GetPortNames();
+            cmbPorts.Items.AddRange(ports);
+
+            if (cmbPorts.Items.Count > 0)
             {
-                try
-                {
-                    // Configurar ambos gráficos
-                    ConfigurarGraficoInyeccionRetorno();
-                    ConfigurarGraficoTemperaturaHumedad();
-                    ConfigurarGraficoGauge();
-
-                    // Configurar el puerto serie
-                    serialPort.DataReceived += SerialPort_DataReceived;
-                    serialPort.Open();
-
-                    // Poblar el ComboBox con los puertos disponibles
-                    string[] ports = SerialPort.GetPortNames();
-                    cmbPorts.Items.AddRange(ports);
-
-                    if (cmbPorts.Items.Count > 0)
-                    {
-                        cmbPorts.SelectedIndex = 0; // Seleccionar el primer puerto disponible
-                    }
-
-                    btnConnect.Click += BtnConnect_Click;
-                    connected = true;
-                }
-              
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error al abrir el puerto: " + ex.Message);
-                    
-                }
+                cmbPorts.SelectedIndex = 0; // Seleccionar el primer puerto disponible
             }
-            
+
+            // Agregar el evento click del botón conectar
+            btnConnect.Click += BtnConnect_Click;
+
+            // Configurar el puerto serie sin abrirlo aún
+            serialPort.DataReceived += SerialPort_DataReceived;
         }
 
 
