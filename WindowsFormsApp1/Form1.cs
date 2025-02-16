@@ -230,6 +230,12 @@ namespace WindowsFormsApp1
                 // Mostrar el modo en el label
                 MostrarModo(modoDescripcion);
 
+                // Ajustar el layout: si el modo es Termohigrómetro, mostrar solo ese gráfico
+                if (modoDescripcion == "Termohigrómetro")
+                    MostrarSoloGraficoTemperatura(true);
+                else
+                    MostrarSoloGraficoTemperatura(false);
+
                 // Extraer datos para el primer gráfico
                 double inyeccion = jsonObject["inyeccion"]?.Value<double>() ?? 0;
                 double retorno = jsonObject["retorno"]?.Value<double>() ?? 0;
@@ -282,36 +288,7 @@ namespace WindowsFormsApp1
             }
         }
 
-        /*
-        private void ProcesarJson(string json)
-        {
-            try
-            {
-                JObject jsonObject = JObject.Parse(json);
-                string jsonFormateado = jsonObject.ToString(Formatting.Indented);
-
-                MostrarDatosEnPantalla(jsonFormateado);
-
-                // Extraer datos para el primer gráfico
-                double inyeccion = jsonObject["inyeccion"]?.Value<double>() ?? 0;
-                double retorno = jsonObject["retorno"]?.Value<double>() ?? 0;
-                string time = jsonObject["time"]?.Value<string>() ?? DateTime.Now.ToString("HH:mm:ss");
-
-                AgregarPuntosGraficoInyeccionRetorno(time, inyeccion, retorno);
-
-                // Extraer datos para el segundo gráfico
-                double tempRef = jsonObject["tempRef"]?.Value<double>() ?? 0;
-                double humRef = jsonObject["humRef"]?.Value<double>() ?? 0;
-                double dewPoint = jsonObject["dewPoint"]?.Value<double>() ?? 0;
-
-                AgregarPuntosGraficoTemperaturaHumedad(time, tempRef, humRef, dewPoint);
-            }
-            catch (JsonReaderException)
-            {
-                MostrarDatosEnPantalla("Error: El JSON recibido no es válido.");
-            }
-        }
-        */
+        
         private void AgregarPuntosGraficoInyeccionRetorno(string time, double inyeccion, double retorno)
         {
             if (chartInyeccionRetorno.InvokeRequired)
@@ -505,6 +482,52 @@ namespace WindowsFormsApp1
                 }
             }
         }
+
+        private void MostrarSoloGraficoTemperatura(bool expandir)
+        {
+            // Aseguramos que se ejecute en el hilo de la UI
+            if (tableLayout.InvokeRequired)
+            {
+                tableLayout.Invoke(new Action(() => MostrarSoloGraficoTemperatura(expandir)));
+                return;
+            }
+
+            if (expandir)
+            {
+                // Ocultar los otros controles para que no ocupen espacio
+                chartInyeccionRetorno.Visible = false;
+                chartGauge.Visible = false;
+                pictureBox1.Visible = false;  // Cambia este nombre si tu control de foto se llama diferente
+
+                // Reubicar el gráfico de temperatura/humedad a la celda (0,0)
+                tableLayout.SetCellPosition(chartTemperaturaHumedad, new TableLayoutPanelCellPosition(0, 0));
+
+                // Hacer que el gráfico abarque todas las columnas y filas
+                tableLayout.SetColumnSpan(chartTemperaturaHumedad, tableLayout.ColumnCount);
+                tableLayout.SetRowSpan(chartTemperaturaHumedad, tableLayout.RowCount);
+                chartTemperaturaHumedad.Dock = DockStyle.Fill;
+
+                // Llevarlo al frente para que no quede detrás de otros controles (por si acaso)
+                chartTemperaturaHumedad.BringToFront();
+            }
+            else
+            {
+                // Restaurar la visibilidad de los otros controles
+                chartInyeccionRetorno.Visible = true;
+                chartGauge.Visible = true;
+                pictureBox1.Visible = true;
+
+                // Restaurar la posición original del gráfico de temperatura/humedad.
+                // En este ejemplo, asumo que originalmente estaba en la celda (0,1) y ocupaba una sola celda.
+                tableLayout.SetCellPosition(chartTemperaturaHumedad, new TableLayoutPanelCellPosition(0, 1));
+                tableLayout.SetColumnSpan(chartTemperaturaHumedad, 1);
+                tableLayout.SetRowSpan(chartTemperaturaHumedad, 1);
+                chartTemperaturaHumedad.Dock = DockStyle.Fill;
+            }
+        }
+
+
+
 
         private void MostrarDatosEnPantalla(string texto)
         {
