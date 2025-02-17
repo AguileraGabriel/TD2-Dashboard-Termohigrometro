@@ -16,6 +16,7 @@ namespace WindowsFormsApp1
     public partial class Form1 : Form
     {
         private const int IntervaloTemp = 2;
+        private string currentMode;
 
         public Form1()
         {
@@ -230,6 +231,10 @@ namespace WindowsFormsApp1
                 // Mostrar el modo en el label
                 MostrarModo(modoDescripcion);
 
+                // Almacenar el modo actual para usarlo en el gauge
+
+                currentMode = modoDescripcion;
+
                 // Ajustar el layout: si el modo es Termohigrómetro, mostrar solo ese gráfico
                 if (modoDescripcion == "Termohigrómetro")
                     MostrarSoloGraficoTemperatura(true);
@@ -334,22 +339,40 @@ namespace WindowsFormsApp1
             series.Points.Clear();
 
             // Visible gauge max value (half-circle)
-            double maxVisibleValue = 3;
+            double maxVisibleValue;
+            
+
+            // Determine color based on your conditions:
+            Color gaugeColor;
+            
+            // Configuración según el modo actual
+            if (currentMode == "Calefacción")
+            {
+                maxVisibleValue = 20; // Rango para calefacción
+                if (saltoTermico < 6)
+                    gaugeColor = Color.Red;
+                else if (saltoTermico < 14)
+                    gaugeColor = Color.Yellow;
+                else
+                    gaugeColor = Color.Green;
+            }
+            else  // Para Refrigeración (y otros modos que no sean calefacción)
+            {
+                maxVisibleValue = 14; // Rango para refrigeración (configuración actual)
+                if (saltoTermico < 4)
+                    gaugeColor = Color.Red;
+                else if (saltoTermico < 8)
+                    gaugeColor = Color.Yellow;
+                else
+                    gaugeColor = Color.Green;
+            }
+
             // Total value (visible half + hidden half)
             double totalValue = maxVisibleValue * 2;
 
             // Ensure that our gauge value does not exceed the visible maximum
             double valuePortion = Math.Min(saltoTermico, maxVisibleValue);
             double remainingVisible = maxVisibleValue - valuePortion;
-
-            // Determine color based on your conditions:
-            Color gaugeColor;
-            if (saltoTermico < 1)
-                gaugeColor = Color.Red;
-            else if (saltoTermico < 2)
-                gaugeColor = Color.Yellow;
-            else // saltoTermico >= 2
-                gaugeColor = Color.Green;
 
             // Data point 1: the gauge value (visible portion)
             DataPoint dpValue = new DataPoint();
