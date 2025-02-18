@@ -29,9 +29,14 @@ Esta aplicación desarrollada en C# es un dashboard diseñado para mostrar de fo
 
 ---
 
-## Instalación
+## Imágenes
 
-1. **Clona el repositorio:**
+### Dashboard modo Refrigeración
 
-   ```bash
-   git clone https://github.com/tu_usuario/tu_repositorio.git
+![Dashboard modo Refrigeración](Imagenes/Dashboard.png)
+
+### Dashboard modo Termohigrómetro
+
+![Dashboard modo Termohigrómetro](Imagenes/Dashboard-termohigrometro.png)
+
+---
